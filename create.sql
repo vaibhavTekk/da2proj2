@@ -4,6 +4,8 @@
 --   itemPrice DECIMAL(10, 2) NOT NULL
 -- );
 
+CREATE DATABASE grocery_store;
+
 CREATE TABLE items (
   id INT AUTO_INCREMENT PRIMARY KEY,
   itemName VARCHAR(255) NOT NULL,
