@@ -1,0 +1,110 @@
+body {
+    background-color: #fff;
+    color: #000;
+    font-family: Arial, sans-serif;
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  h1 {
+    text-align: center;
+  }
+  
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+  }
+  
+  .item {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .item img {
+    width: 100%;
+    max-height: 150px;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+  
+  .cart {
+    margin-top: 40px;
+  }
+  
+  .cart h2 {
+    text-align: center;
+  }
+  
+  .cart button#checkout-btn {
+    background-color: #008000;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    margin-top: 10px;
+    cursor: pointer;
+  }
+  
+  .cart button#checkout-btn:hover {
+    background-color: #006400;
+  }
+  
+  .add-items {
+    margin-top: 40px;
+  }
+  
+  .add-items h2 {
+    text-align: center;
+  }
+  
+  .add-items label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .add-items input[type="text"] {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+  }
+  
+  .add-items button[type="submit"] {
+    background-color: #008000;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  
+  .add-items button[type="submit"]:hover {
+    background-color: #006400;
+  }
+  
+
+  #orders {
+    background-color: #f5f5f5;
+    padding: 20px;
+    margin-top: 20px;
+  }
+  
+  #orders h2 {
+    color: #000;
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  #orderList {
+    list-style: none;
+    padding: 0;
+  }
+  
+  #orderList li {
+    margin-bottom: 10px;
+  }
+  
