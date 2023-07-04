@@ -80,7 +80,6 @@ document.addEventListener("DOMContentLoaded", function() {
   
     checkoutBtn.addEventListener("click", function() {
       generateBill();
-      fetchOrders();
     });
   
     addItemForm.addEventListener("submit", function(e) {
@@ -120,6 +119,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (response.ok) {
                   alert("Bill generated and cart cleared.");
                   cartItems.innerHTML = "";
+                  fetchOrders();
                 } else {
                   console.error("Error generating bill.");
                 }
