@@ -2,44 +2,46 @@
 <html>
 
 <head>
-    <title>Grocery Store Dashboard</title>
+    <title>VVMart</title>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 
 <body>
     <div class="container">
-        <h1>Grocery Store Dashboard</h1>
-        <div class="grid">
+        <h1>VVMart</h1>
+        <div class="flex">
+            <div class="grid">
 
-            <!-- Add more items here -->
+                <!-- Add more items here -->
+            </div>
+            <div class="cart">
+                <h2>Cart</h2>
+                <ul id="cart-items"></ul>
+                <button id="checkout-btn">Checkout</button>
+            </div>
         </div>
+        <div class="flex">
+            <div class="add-items">
+                <h2>Add Items</h2>
+                <form id="add-item-form">
+                    <label for="item-name">Item Name:</label>
+                    <input type="text" id="item-name" required>
 
-        <div class="cart">
-            <h2>Cart</h2>
-            <ul id="cart-items"></ul>
-            <button id="checkout-btn">Checkout</button>
+                    <label for="item-price">Item Price:</label>
+                    <input type="text" id="item-price" required>
+
+                    <label for="item-image">Item Image:</label>
+                    <input type="text" id="item-image" required>
+
+                    <button type="submit">Add Item</button>
+                </form>
+            </div>
+
+            <section id="orders">
+                <h2>Orders</h2>
+                <ul id="orderList"></ul>
+            </section>
         </div>
-
-        <div class="add-items">
-            <h2>Add Items</h2>
-            <form id="add-item-form">
-                <label for="item-name">Item Name:</label>
-                <input type="text" id="item-name" required>
-
-                <label for="item-price">Item Price:</label>
-                <input type="text" id="item-price" required>
-
-                <label for="item-image">Item Image:</label>
-                <input type="text" id="item-image" required>
-
-                <button type="submit">Add Item</button>
-            </form>
-        </div>
-
-        <section id="orders">
-            <h2>Orders</h2>
-            <ul id="orderList"></ul>
-        </section>
     </div>
 
     <script src="script.js"></script>

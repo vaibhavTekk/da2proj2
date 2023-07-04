@@ -17,6 +17,7 @@ CREATE TABLE cart_items (
   id INT AUTO_INCREMENT PRIMARY KEY,
   itemName VARCHAR(255) NOT NULL,
   itemPrice DECIMAL(10, 2) NOT NULL,
+  itemId INT NOT NULL,
   quantity INT NOT NULL DEFAULT 0
 );
 

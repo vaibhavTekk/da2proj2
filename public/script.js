@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const API_URL = "";
   
     function fetchItems() {
+      const grid = document.querySelector(".grid");
+      grid.innerHTML = "";
       fetch(`${API_URL}/items`)
         .then(response => response.json())
         .then(data => {
@@ -16,20 +18,22 @@ document.addEventListener("DOMContentLoaded", function() {
             newItem.innerHTML = `
               <img src="${item.itemImage}" alt="${item.itemName}">
               <h3>${item.itemName}</h3>
-              <p>$${item.itemPrice}</p>
+              <p>Rs${item.itemPrice}</p>
+              <p class="item-id">${item.id}</p>
               <button class="add-to-cart">Add to Cart</button>
             `;
             document.querySelector(".grid").appendChild(newItem);
-            addToCartButtons = document.querySelectorAll(".add-to-cart");
+          });
+          addToCartButtons = document.querySelectorAll(".add-to-cart");
             addToCartButtons.forEach(function(button) {
                 button.addEventListener("click", function() {
                   const item = button.parentNode;
                   const itemName = item.querySelector("h3").innerText;
-                  const itemPrice = parseFloat(item.querySelector("p").innerText.replace("$", ""));
-                  addToCart(itemName, itemPrice);
+                  const itemPrice = parseFloat(item.querySelector("p").innerText.replace("Rs", ""));
+                  const itemId = item.querySelector(".item-id").innerText;
+                  addToCart(itemId, itemName, itemPrice);
                 });
               });
-          });
         })
         .catch(error => {
           console.error("Error fetching items: ", error);
@@ -41,25 +45,31 @@ document.addEventListener("DOMContentLoaded", function() {
       fetch(`${API_URL}/cart-items`)
         .then(response => response.json())
         .then(data => {
-          cartItems.innerHTML = "";
-          data.forEach(item => {
-            const li = document.createElement("li");
-            li.innerText = `${item.itemName} - $${item.itemPrice} x ${item.quantity}`;
-            cartItems.appendChild(li);
-          });
+          if (data.length == 0){
+            cartItems.innerHTML = "Cart is empty";
+          } else {
+            cartItems.innerHTML = "";
+            data.forEach(item => {
+              const li = document.createElement("li");
+              li.classList.add('cart-item')
+              li.innerText = `${item.itemName} - Rs${item.itemPrice} x ${item.quantity}`;
+              cartItems.appendChild(li);
+            });
+          }
         })
         .catch(error => {
           console.error("Error fetching cart items: ", error);
         });
     }
   
-    function addToCart(itemName, itemPrice) {
+    function addToCart(itemId,itemName, itemPrice) {
       fetch(`${API_URL}/add-to-cart`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
+          itemId: itemId,
           itemName: itemName,
           itemPrice: itemPrice
         })
@@ -80,22 +90,48 @@ document.addEventListener("DOMContentLoaded", function() {
   
     checkoutBtn.addEventListener("click", function() {
       generateBill();
-      fetchOrders();
     });
   
     addItemForm.addEventListener("submit", function(e) {
       e.preventDefault();
       const itemNameInput = document.getElementById("item-name");
       const itemPriceInput = document.getElementById("item-price");
-  
+      const itemImageInput = document.getElementById("item-image");
+
       const itemName = itemNameInput.value;
       const itemPrice = parseFloat(itemPriceInput.value);
+      const itemImage = itemImageInput.value;
   
-      addToCart(itemName, itemPrice);
+      addItem(itemName, itemPrice, itemImage);
   
       itemNameInput.value = "";
       itemPriceInput.value = "";
+      itemImageInput.value = "";
     });
+
+    function addItem(itemName, itemPrice, itemImage){
+      fetch(`${API_URL}/add-item`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          itemName: itemName,
+          itemPrice: itemPrice,
+          itemImage: itemImage
+        })
+      })
+        .then(response => {
+          if (response.ok) {
+            fetchItems();
+          } else {
+            console.error("Error adding item to cart.");
+          }
+        })
+        .catch(error => {
+          console.error("Error adding item to cart: ", error);
+        });
+    }
       // ...
       
       function generateBill() {
@@ -120,6 +156,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (response.ok) {
                   alert("Bill generated and cart cleared.");
                   cartItems.innerHTML = "";
+                  fetchOrders();
                 } else {
                   console.error("Error generating bill.");
                 }
@@ -145,7 +182,7 @@ document.addEventListener("DOMContentLoaded", function() {
           orderList.innerHTML = "";
           data.forEach(order => {
             const li = document.createElement("li");
-            li.innerText = `Order ID: ${order.id}, Total: $${order.total}, Date: ${order.date}`;
+            li.innerText = `Order ID: ${order.id}, Total: Rs${order.total}, Date: ${order.date}`;
             orderList.appendChild(li);
           });
         })
@@ -158,6 +195,3 @@ document.addEventListener("DOMContentLoaded", function() {
     
 
   });
-  
- 
-  

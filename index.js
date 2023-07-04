@@ -46,12 +46,13 @@ app.post('/add-item', (req, res) => {
       }
   
       res.sendStatus(200);
+      console.log("inserted item");
     });
   });
 
 app.post('/add-to-cart', (req, res) => {
-  const { itemName, itemPrice } = req.body;
-  connection.query('SELECT * FROM cart_items WHERE itemName = ?', [itemName], (err, results) => {
+  const {itemId, itemName, itemPrice } = req.body;
+  connection.query('SELECT * FROM cart_items WHERE itemId = ?', [itemId], (err, results) => {
     if (err) {
       console.error('Error querying the database: ', err);
       res.status(500).send('Internal Server Error');
@@ -60,7 +61,7 @@ app.post('/add-to-cart', (req, res) => {
 
     if (results.length > 0) {
       const quantity = results[0].quantity + 1;
-      connection.query('UPDATE cart_items SET quantity = ? WHERE itemName = ?', [quantity, itemName], (err) => {
+      connection.query('UPDATE cart_items SET quantity = ? WHERE itemId = ?', [quantity, itemId], (err) => {
         if (err) {
           console.error('Error updating the quantity: ', err);
           res.status(500).send('Internal Server Error');
@@ -70,7 +71,7 @@ app.post('/add-to-cart', (req, res) => {
         console.log("Updated qty");
       });
     } else {
-      connection.query('INSERT INTO cart_items (itemName, itemPrice, quantity) VALUES (?, ?, 1)', [itemName, itemPrice], (err) => {
+      connection.query('INSERT INTO cart_items (itemName, itemPrice, quantity, itemId) VALUES (?, ?, 1, ?)', [itemName, itemPrice,itemId], (err) => {
         if (err) {
           console.error('Error inserting new item: ', err);
           res.status(500).send('Internal Server Error');
@@ -119,16 +120,16 @@ app.post('/checkout', (req, res) => {
     });
   });
 
-  app.get('/cart-items', (req, res) => {
-    connection.query('SELECT * FROM cart_items', (err, results) => {
-      if (err) {
-        console.error('Error querying the database: ', err);
-        res.status(500).send('Internal Server Error');
-        return;
-      }
-      res.json(results);
-    });
+app.get('/cart-items', (req, res) => {
+  connection.query('SELECT * FROM cart_items', (err, results) => {
+    if (err) {
+      console.error('Error querying the database: ', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+    res.json(results);
   });
+});
 
 app.get('/orders', (req, res) => {
     connection.query('SELECT * FROM orders', (err, results) => {
@@ -139,7 +140,7 @@ app.get('/orders', (req, res) => {
       }
       res.json(results);
     });
-  });
+});
     
 
 app.listen(8000, () => {
