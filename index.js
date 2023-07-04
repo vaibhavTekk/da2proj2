@@ -23,11 +23,6 @@ app.use(express.static('public'));
 app.use(express.json());
 app.use(cors()); // Enable Cross-Origin Resource Sharing
 
-app.get('/', function(req, res){
-    res.sendFile(__dirname + '/index.html');
-});
-
-
 app.get('/items', (req, res) => {
   connection.query('SELECT * FROM items', (err, results) => {
     if (err) {
@@ -40,6 +35,19 @@ app.get('/items', (req, res) => {
   });
 });
 
+app.post('/add-item', (req, res) => {
+    const { itemName, itemPrice, itemImage } = req.body;
+  
+    connection.query('INSERT INTO items (itemName, itemPrice, itemImage) VALUES (?, ?, ?)', [itemName, itemPrice, itemImage], (err) => {
+      if (err) {
+        console.error('Error inserting new item: ', err);
+        res.status(500).send('Internal Server Error');
+        return;
+      }
+  
+      res.sendStatus(200);
+    });
+  });
 
 app.post('/add-to-cart', (req, res) => {
   const { itemName, itemPrice } = req.body;
