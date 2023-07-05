@@ -60,7 +60,7 @@ app.post('/add-to-cart', (req, res) => {
     }
 
     if (results.length > 0) {
-      const quantity = results[0].quantity + itemQty;
+      const quantity = parseInt(results[0].quantity) + parseInt(itemQty);
       connection.query('UPDATE cart_items SET quantity = ? WHERE itemId = ?', [quantity, itemId], (err) => {
         if (err) {
           console.error('Error updating the quantity: ', err);
