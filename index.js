@@ -4,10 +4,10 @@ const cors = require('cors');
 
 const connection = mysql.createConnection({
   host: 'localhost',
-  user: 'host1',
-  password: 'host1',
+  user: 'admin',
+  password: 'admin',
   database: 'grocery_store',
-  port: 1433
+  port: 3306
 });
 
 connection.connect((err) => {
@@ -19,7 +19,7 @@ connection.connect((err) => {
 });
 
 const app = express();
-app.use(express.static('public'));
+app.use(express.static(__dirname+'/public'));
 app.use(express.json());
 app.use(cors()); // Enable Cross-Origin Resource Sharing
 
@@ -51,7 +51,7 @@ app.post('/add-item', (req, res) => {
   });
 
 app.post('/add-to-cart', (req, res) => {
-  const {itemId, itemName, itemPrice } = req.body;
+  const {itemId, itemName, itemPrice, itemQty } = req.body;
   connection.query('SELECT * FROM cart_items WHERE itemId = ?', [itemId], (err, results) => {
     if (err) {
       console.error('Error querying the database: ', err);
@@ -60,7 +60,7 @@ app.post('/add-to-cart', (req, res) => {
     }
 
     if (results.length > 0) {
-      const quantity = results[0].quantity + 1;
+      const quantity = results[0].quantity + itemQty;
       connection.query('UPDATE cart_items SET quantity = ? WHERE itemId = ?', [quantity, itemId], (err) => {
         if (err) {
           console.error('Error updating the quantity: ', err);
@@ -71,7 +71,7 @@ app.post('/add-to-cart', (req, res) => {
         console.log("Updated qty");
       });
     } else {
-      connection.query('INSERT INTO cart_items (itemName, itemPrice, quantity, itemId) VALUES (?, ?, 1, ?)', [itemName, itemPrice,itemId], (err) => {
+      connection.query('INSERT INTO cart_items (itemName, itemPrice, quantity, itemId) VALUES (?, ?, ?, ?)', [itemName, itemPrice,itemQty,itemId], (err) => {
         if (err) {
           console.error('Error inserting new item: ', err);
           res.status(500).send('Internal Server Error');

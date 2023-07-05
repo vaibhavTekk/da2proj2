@@ -20,18 +20,28 @@ document.addEventListener("DOMContentLoaded", function() {
               <h3>${item.itemName}</h3>
               <p>Rs${item.itemPrice}</p>
               <p class="item-id">${item.id}</p>
+              <select id="qty_drop"> 
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5/option>
+              </select>
               <button class="add-to-cart">Add to Cart</button>
+            
             `;
             document.querySelector(".grid").appendChild(newItem);
           });
           addToCartButtons = document.querySelectorAll(".add-to-cart");
             addToCartButtons.forEach(function(button) {
+                
                 button.addEventListener("click", function() {
                   const item = button.parentNode;
                   const itemName = item.querySelector("h3").innerText;
                   const itemPrice = parseFloat(item.querySelector("p").innerText.replace("Rs", ""));
                   const itemId = item.querySelector(".item-id").innerText;
-                  addToCart(itemId, itemName, itemPrice);
+                  const itemQty = item.querySelector("#qty_drop").value;
+                  addToCart(itemId, itemName, itemPrice, itemQty);
                 });
               });
         })
@@ -62,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
   
-    function addToCart(itemId,itemName, itemPrice) {
+    function addToCart(itemId,itemName, itemPrice, itemQty) {
       fetch(`${API_URL}/add-to-cart`, {
         method: "POST",
         headers: {
@@ -71,7 +81,8 @@ document.addEventListener("DOMContentLoaded", function() {
         body: JSON.stringify({
           itemId: itemId,
           itemName: itemName,
-          itemPrice: itemPrice
+          itemPrice: itemPrice,
+          itemQty: itemQty
         })
       })
         .then(response => {
