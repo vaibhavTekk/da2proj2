@@ -60,7 +60,7 @@ app.post('/add-to-cart', (req, res) => {
     }
 
     if (results.length > 0) {
-      const quantity = results[0].quantity + itemQty;
+      const quantity = parseInt(results[0].quantity) + parseInt(itemQty);
       connection.query('UPDATE cart_items SET quantity = ? WHERE itemId = ?', [quantity, itemId], (err) => {
         if (err) {
           console.error('Error updating the quantity: ', err);
@@ -140,6 +140,30 @@ app.get('/orders', (req, res) => {
       }
       res.json(results);
     });
+});
+
+app.post('/delete-item-cart', (req, res) => {
+  const {itemId} = req.body;
+  connection.query('SELECT * FROM cart_items WHERE itemId = ?', [itemId], (err, results) => {
+    if (err) {
+      console.error('Error querying the database: ', err);
+      res.status(500).send('Internal Server Error');
+      return;
+    }
+
+    if (results.length > 0) {
+      const id = parseInt(itemId);
+      connection.query('DELETE from cart_items WHERE itemId = ?', [itemId], (err) => {
+        if (err) {
+          console.error('Error updating the quantity: ', err);
+          res.status(500).send('Internal Server Error');
+          return;
+        }
+        res.sendStatus(200);
+        console.log("Deleted item from cart");
+      });
+    } 
+  });
 });
     
 

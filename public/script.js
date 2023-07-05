@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     let addToCartButtons = document.querySelectorAll(".add-to-cart");
+    let deleteFromCartButtons = document.querySelectorAll(".delete");
     const cartItems = document.getElementById("cart-items");
     const checkoutBtn = document.getElementById("checkout-btn");
     const addItemForm = document.getElementById("add-item-form");
@@ -62,9 +63,18 @@ document.addEventListener("DOMContentLoaded", function() {
             data.forEach(item => {
               const li = document.createElement("li");
               li.classList.add('cart-item')
-              li.innerText = `${item.itemName} - Rs${item.itemPrice} x ${item.quantity}`;
+              li.innerHTML = `<p class="item-id-cart">${item.itemId}</p> ${item.itemName} - Rs${item.itemPrice} x ${item.quantity} <button class="delete">X</button>`;
               cartItems.appendChild(li);
             });
+            deleteFromCartButtons = document.querySelectorAll(".delete");
+            deleteFromCartButtons.forEach(function(button) {
+                
+                button.addEventListener("click", function() {
+                  const item = button.parentNode;
+                  const itemId = item.querySelector(".item-id-cart").innerText;
+                  deleteFromCart(itemId);
+                });
+              });
           }
         })
         .catch(error => {
@@ -83,6 +93,28 @@ document.addEventListener("DOMContentLoaded", function() {
           itemName: itemName,
           itemPrice: itemPrice,
           itemQty: itemQty
+        })
+      })
+        .then(response => {
+          if (response.ok) {
+            fetchCartItems();
+          } else {
+            console.error("Error adding item to cart.");
+          }
+        })
+        .catch(error => {
+          console.error("Error adding item to cart: ", error);
+        });
+    }
+
+    function deleteFromCart(itemId){
+      fetch(`${API_URL}/delete-item-cart`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          itemId: itemId
         })
       })
         .then(response => {
